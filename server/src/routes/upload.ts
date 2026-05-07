@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 const pdf = require('pdf-parse');
 import mammoth from 'mammoth';
 import Papa from 'papaparse';
@@ -9,7 +10,7 @@ import Papa from 'papaparse';
 export const uploadRoute = Router();
 
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, '../../../uploads'),
+  destination: os.tmpdir(),
   filename: (_, file, cb) =>
     cb(null, `${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(file.originalname)}`),
 });

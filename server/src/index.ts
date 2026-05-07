@@ -16,11 +16,7 @@ import { exportRoute }  from './routes/export';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Create uploads dir
-const uploadsDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
@@ -40,7 +36,11 @@ app.get('/api/health', (_, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`\n✅ Intuita backend running on http://localhost:${PORT}`);
-  console.log(`🔑 Gemini API: ${process.env.GEMINI_API_KEY ? '✅ Key loaded' : '❌ MISSING — add key to server/.env'}\n`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n✅ Intuita backend running on http://localhost:${PORT}`);
+    console.log(`🔑 Gemini API: ${process.env.GEMINI_API_KEY ? '✅ Key loaded' : '❌ MISSING — add key to server/.env'}\n`);
+  });
+}
+
+export default app;
