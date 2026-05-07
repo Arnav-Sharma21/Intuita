@@ -21,14 +21,18 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Routes
-app.use('/api/wizard',  wizardRoute);
-app.use('/api/tweak',   tweakRoute);
-app.use('/api/tools',   toolsRoute);
-app.use('/api/upload',  uploadRoute);
-app.use('/api/analyze', analyzeRoute);
-app.use('/api/export',  exportRoute);
+const apiRouter = express.Router();
+apiRouter.use('/wizard',  wizardRoute);
+apiRouter.use('/tweak',   tweakRoute);
+apiRouter.use('/tools',   toolsRoute);
+apiRouter.use('/upload',  uploadRoute);
+apiRouter.use('/analyze', analyzeRoute);
+apiRouter.use('/export',  exportRoute);
 
-app.get('/api/health', (_, res) => {
+app.use('/api', apiRouter);
+app.use('/', apiRouter); // Handle Vercel potentially stripping the /api prefix
+
+apiRouter.get('/health', (_, res) => {
   res.json({
     status: 'ok',
     gemini: process.env.GEMINI_API_KEY ? 'connected' : 'MISSING KEY',
