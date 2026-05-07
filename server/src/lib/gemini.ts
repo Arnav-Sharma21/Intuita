@@ -16,7 +16,7 @@ const defaultConfig: GenerationConfig = {
 export async function generate(prompt: string, config?: Partial<GenerationConfig>): Promise<string> {
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-3.1-flash-lite-preview',
       generationConfig: { ...defaultConfig, ...config },
     });
     const result = await model.generateContent(prompt);
