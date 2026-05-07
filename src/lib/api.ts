@@ -10,7 +10,10 @@ const http = axios.create({
 http.interceptors.response.use(
   (r) => r,
   (err: AxiosError<{ error: string }>) => {
-    const msg = err.response?.data?.error || err.message || 'Something went wrong';
+    let msg = err.response?.data?.error || err.message || 'Something went wrong';
+    if (typeof msg === 'object') {
+      msg = JSON.stringify(msg);
+    }
     return Promise.reject(new Error(msg));
   }
 );

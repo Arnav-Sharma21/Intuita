@@ -2,10 +2,7 @@ import { GoogleGenerativeAI, GenerationConfig } from '@google/generative-ai';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const key = process.env.GEMINI_API_KEY;
-if (!key) throw new Error('GEMINI_API_KEY missing in server/.env');
-
-const genAI = new GoogleGenerativeAI(key);
+let genAI: GoogleGenerativeAI | null = null;
 
 const defaultConfig: GenerationConfig = {
   temperature: 0.82,
@@ -15,6 +12,12 @@ const defaultConfig: GenerationConfig = {
 
 export async function generate(prompt: string, config?: Partial<GenerationConfig>): Promise<string> {
   try {
+    if (!genAI) {
+      const key = process.env.GEMINI_API_KEY;
+      if (!key) throw new Error('GEMINI_API_KEY is missing in Vercel Environment Variables');
+      genAI = new GoogleGenerativeAI(key);
+    }
+
     const model = genAI.getGenerativeModel({
       model: 'gemini-3.1-flash-lite-preview',
       generationConfig: { ...defaultConfig, ...config },
