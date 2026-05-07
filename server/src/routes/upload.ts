@@ -3,7 +3,13 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-const pdf = require('pdf-parse');
+// Import pdf-parse lazily or from the lib folder to prevent Vercel test data read crash
+let pdf: any;
+try {
+  pdf = require('pdf-parse/lib/pdf-parse.js');
+} catch (e) {
+  pdf = require('pdf-parse'); // Fallback
+}
 import mammoth from 'mammoth';
 import Papa from 'papaparse';
 
